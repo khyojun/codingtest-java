@@ -1,153 +1,130 @@
 import java.util.*;
 import java.util.stream.Collectors;
 import java.lang.*;
+
 class Solution {
     
-    static List<Integer> preArr = new ArrayList<>();
-    static List<Integer> postArr = new ArrayList<>();
-    
+    static List<Integer> recordPost = new ArrayList<>();
+    static List<Integer> recordPre = new ArrayList<>();
     public int[][] solution(int[][] nodeinfo) {
         int[][] answer = {};
         
-        // node 정보 입력
-        // 트리 그리기
-        // 돌고 끝!
-        
-        //node 정보 입력
-        List<NodeInfo> arr = new ArrayList<>();
+        List<NInfo> nInfos = new ArrayList<>();
+        // 트리를 그리기 위한 정보를 정리해야함
         for(int i=0; i<nodeinfo.length; i++){
-            arr.add(new NodeInfo(nodeinfo[i][0], nodeinfo[i][1], i+1));
+            nInfos.add(new NInfo(nodeinfo[i][0], nodeinfo[i][1], i+1));
+        }
+
+        List<NInfo> sortedNInfos = nInfos.stream().sorted(Comparator.comparing(NInfo::getY, Comparator.reverseOrder()).thenComparing(Comparator.comparing(NInfo::getX))).collect(Collectors.toList());
+        
+        
+        
+        // 트리를 그려야함!
+        Node root = new Node(sortedNInfos.get(0));
+        for(int i=1; i<sortedNInfos.size(); i++){
+            root.drawTree(root, sortedNInfos.get(i));
         }
         
-        List<NodeInfo> sortedArr=arr.stream().sorted(Comparator.comparing(NodeInfo::getY, Comparator.reverseOrder()).thenComparing(NodeInfo::getX)).collect(Collectors.toList());
+        // 전위 후위 순회를 돌 수 있도록 해야함!
         
-        // 트리 만들기 -> x위치 보고 만들기
-        
-        NodeInfo rootInfo = sortedArr.get(0);
-        Node root = new Node(rootInfo);
-        for(int i=1; i<sortedArr.size(); i++){
-            NodeInfo nowNodeInfo=sortedArr.get(i);
-            Node newNode = new Node(nowNodeInfo);
-            madeTree(root, newNode);
-        }
-        
-        
-        root.preOrder(root);
         root.postOrder(root);
+        root.preOrder(root);
         
-        
-        int[][] answers = new int[2][];
-        answers[0] = preArr.stream().mapToInt(Integer::intValue).toArray();
-        answers[1] = postArr.stream().mapToInt(Integer::intValue).toArray();
-        
-        
-        return answers;
+        return new int[][] {recordPost.stream().mapToInt(Integer::intValue).toArray(), recordPre.stream().mapToInt(Integer::intValue).toArray()};
     }
     
-    void madeTree(Node root, Node nowNode){
-        if(root.nowNode().x > nowNode.nowNode().x){
-            if(root.getLeft()==null){
-                root.addLeftNode(nowNode);
+    
+    static class Node{
+        NInfo node;
+        Node left;
+        Node right;
+        
+        public Node(NInfo node){
+            this.node=node;
+        }
+        
+        
+        public void postOrder(Node root){
+            if(root==null){
+                return;
             }
+            recordPost.add(root.node.getNumber());
+            postOrder(root.left);
+            postOrder(root.right);
+        }
+        
+        public void preOrder(Node root){
+            if(root==null){
+                return;
+            }
+            preOrder(root.left);
+            preOrder(root.right);
+            recordPre.add(root.node.getNumber());
+        }
+        
+        
+        public void drawTree(Node root, NInfo now){
+            Node nowNode=new Node(now);
+            if(root.node.getX()<now.getX()){
+                if(root.right==null){
+                    addRight(root, nowNode);
+                    return;
+                }
+                drawTree(root.right, now);
+            }    
             else{
-                madeTree(root.getLeft(), nowNode);
-            }
-        }else{
-            if(root.getRight()==null){
-                root.addRightNode(nowNode);
-            }
-            else{
-                madeTree(root.getRight(), nowNode);
+                if(root.left==null){
+                    addLeft(root, nowNode);
+                    return;
+                }
+                drawTree(root.left, now);
             }
         }
+        
+        public void addLeft(Node root, Node left){
+            root.left=left;
+        }
+        
+        public void addRight(Node root, Node right){
+            root.right=right;
+        }
+        
+        
+        
     }
     
     
-    
-    
-    static class NodeInfo{
-        int x;
-        int y;
-        int idx;
+    static class NInfo{
+        private int x;
+        private int y;
+        private int number;
         
-        
-        public NodeInfo(int x, int y, int idx){
+        public NInfo(int x, int y, int number){
             this.x=x;
             this.y=y;
-            this.idx=idx;
+            this.number=number;
         }
         
         public int getX(){
             return this.x;
         }
+        
         public int getY(){
             return this.y;
         }
-        public int getIdx(){
-            return this.idx;
+        
+        public int getNumber(){
+            return this.number;
         }
-        
-        
-        
         
         @Override
         public String toString(){
-            return "This x : " + this.x + " This y : " + this.y;
+            return "x:" + this.x + " y:" + this.y + " node:" + this.number;
         }
-        
         
     }
-
     
     
-    static class Node{
-        private NodeInfo idx;
-        private Node left;
-        private Node right;
-        
-        public Node(NodeInfo idx){
-            this.idx=idx;
-        }
-        
-        
-        public void addLeftNode(Node left){
-            this.left=left;
-        }
-        
-        public void addRightNode(Node right){
-            this.right=right;
-        }
-        
-        
-        public Node getLeft(){
-            return this.left;
-        }
-        public Node getRight(){
-            return this.right;
-        }
-        public NodeInfo nowNode(){
-            return idx;
-        }
-        
-        public void preOrder(Node root){
-            if(root == null){
-                return;
-            }
-            preArr.add(root.nowNode().getIdx());
-            preOrder(root.getLeft());
-            preOrder(root.getRight());
-        }
-        
-        public void postOrder(Node root){
-            if(root == null){
-                return;
-            }
-            postOrder(root.getLeft());
-            postOrder(root.getRight());
-            postArr.add(root.nowNode().getIdx());
-        }
-        
-        
-        
-    }
+    
+    
 }
