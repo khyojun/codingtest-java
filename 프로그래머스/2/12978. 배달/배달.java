@@ -8,10 +8,8 @@ class Solution {
 
         // 1번이랑 연결된 거리 -> k 이하의 시간까지 갈 수 있는 도시 갯수 -> 최소 거리
         // 양방향 노드임!
+        //floyd 워셜로 해결 ! -> n 3승해도 괜춘
         
-        //아니면 다익스트라 돌리고! -> 그 다음 비용 다 계산하면 되긴함!
-        
-        Queue<Route> q = new LinkedList<>();
         
         int[][] dis = new int[N+1][N+1];
         
@@ -21,9 +19,7 @@ class Solution {
                     dis[i][j]=0;
                     continue;
                 }
-                //dis[i][j]=Integer.MAX_VALUE;
                 dis[i][j]=250000000;
-            
             }
         }
         
@@ -33,8 +29,7 @@ class Solution {
                 int fin = road[i][1];
                 int cost = road[i][2];
                 
-                q.offer(new Route(start,fin, cost));
-                q.offer(new Route(fin,start, cost));
+                //경로 여러개라서 배제
                 if(dis[start][fin]!=250000000){
                     if(dis[start][fin] >= cost){
                         dis[start][fin] = cost;
@@ -48,14 +43,8 @@ class Solution {
             }
         }
         
-//          for(int i=1; i<=N; i++){
-//             for(int j=1; j<=N; j++){
-     
-//                 System.out.print(dis[i][j] + " ");
-//             }
-//             System.out.println();
-//         }
         
+        // k -> i, j 방식으로 돌려버리기~~
         for(int k=1; k<=N; k++){
             for(int i=1; i<=N; i++){
                 for(int j=1; j<=N; j++){
@@ -68,14 +57,11 @@ class Solution {
         }
         
         
-        //경로가 여러개인 경우들이 있음! ㅠㅠㅠ
         for(int i=1; i<=N; i++){
             for(int j=1; j<=N; j++){
                 if(i==1 && dis[i][j]<=K)
                     answer++;
-                //System.out.print(dis[i][j] + " ");
             }
-            //System.out.println();
         }
         
         
@@ -85,17 +71,5 @@ class Solution {
     }
     
     
-    static class Route{
-        int start;
-        int fin;
-        int cost;
-        
-        
-        public Route(int start, int fin, int cost){
-            this.start=start;
-            this.fin=fin;
-            this.cost=cost;
-        }
-        
-    }
+ 
 }
