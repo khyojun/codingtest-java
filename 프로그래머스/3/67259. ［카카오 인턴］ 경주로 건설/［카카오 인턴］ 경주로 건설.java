@@ -15,7 +15,6 @@ class Solution {
         int[] dx = {0,0,1,-1};
         int[] dy = {1,-1,0,0};
         int[] dir = {1,1,2,2}; // 1 이면 좌우, 2이면 상하
-        boolean[][][] visited = new boolean[length+1][length+1][3];
         
         int[][][] dis = new int[length+1][length+1][3];
         
@@ -25,30 +24,16 @@ class Solution {
                 dis[i][j][2] = 1000_0000;
             }
         }
-        
-        // 가는 방향이 중요함! 직선이었다가 꺾으면! dir
-        // 직진인지 커브인지 여부가 중요! 
-        // q에는 좌표 정보가 들어가야하지 않음?
         Queue<Point> q = new LinkedList<>();
         
         dis[0][0][0]=0;
         q.offer(new Point(0,0,0));
-        // dir 1 이면 좌우, 2이면 상하
         
         while(!q.isEmpty()){
             Point p=q.poll();
             int nowX = p.x;
             int nowY= p.y;
             int nowDir=p.dir;     
-
-            // if(!visited[nowX][nowY][nowDir])
-            //     visited[nowX][nowY][nowDir]=true;
-            // else
-            //     continue;
-            // if(nowDir==0){
-            //     visited[nowX][nowY][1]=true;
-            //     visited[nowX][nowY][2]=true;
-            // }
             
             for(int i=0; i<4; i++){
                 int nextX = nowX+dx[i];
@@ -59,8 +44,6 @@ class Solution {
                     if(nextDir!=nowDir && nowDir!=0){
                         cost = 600;
                     }
-                    // true 일지라도! 최소값이면 변경 하고 
-                    // 문제 파악 방향따라 값이 다 다름
 
                     if(board[nextX][nextY]==1)
                         continue;
@@ -76,7 +59,7 @@ class Solution {
                 }
                 return Math.min(dis[length-1][length-1][1], dis[length-1][length-1][2]);
 
-            }
+    }
 
     
     static class Point{
