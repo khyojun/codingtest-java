@@ -1,4 +1,15 @@
-require 'prime'
+def isPrime(num)
+    cnt=0
+    #puts num
+    puts 
+    for i in 2..Math.sqrt(num)
+        if num%i==0
+            return false
+        end
+    end
+    
+    return true
+end
 
 def solution(nums)
     answer = 0
@@ -7,14 +18,9 @@ def solution(nums)
     # 3개의 수를 어떻게 뽑을지?
     # 반복문 이용?
     # 3중 for -> 50C3
+    # combination을 활용하면 쉽게 할 수 있다.
+
+    return nums.combination(3).map{|t| t.sum}.select{|t| isPrime(t)}.count()
     
-    for i in 0..nums.length-3
-        for j in i+1..nums.length-2
-            for k in j+1..nums.length-1
-                answer+= (nums[i] + nums[j] + nums[k]).prime? ? 1 : 0
-            end
-        end
-    end
     
-    return answer
 end
