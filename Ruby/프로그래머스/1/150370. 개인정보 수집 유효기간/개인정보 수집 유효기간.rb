@@ -29,14 +29,12 @@ def solution(today, terms, privacies)
         realMonth = 0
         if addMonth % 12==0
             realMonth = 12
-            year+=addMonth/13
+            year+=(addMonth-1)/12
         else
             realMonth = addMonth % 12
-            year+=addMonth /12
+            year+=(addMonth-1)/12
         end
-        
-        print "now year #{year} now month #{realMonth} now Day #{day}"
-                
+                        
         if t_year > year
             answer << index+1
         elsif t_year==year && t_month > realMonth
@@ -45,8 +43,6 @@ def solution(today, terms, privacies)
             answer << index+1
         end 
     }
-    # 2022.05.28 일이면!
-    # 2022.06.01 2022.06.01 이었으면? 보통 2022.05
     
     
     return answer
