@@ -17,35 +17,62 @@ public class Main {
 		int n = Integer.parseInt(st.nextToken());
 		int m =  Integer.parseInt(st.nextToken());
 
-		// 금메달 수가 더 많은 나라
-		// 금메달 수가 같으면, 은메달 수가 더 많은 나라
-		// 금, 은메달 수가 모두 같으면, 동메달 수가 더 많은 나라
-
-		Map<Integer, Integer> scoreBoard = new HashMap<>();
+		
+		Map<Integer, Medal> scoreBoard = new HashMap<>();
 
 		for(int i=0; i<n; i++){
 			StringTokenizer stCountry = new StringTokenizer(br.readLine(), " ");
 
 			int country = Integer.parseInt(stCountry.nextToken());
-			int gold = Integer.parseInt(stCountry.nextToken()) *5;
-			int silver = Integer.parseInt(stCountry.nextToken()) *4;
-			int bronze  = Integer.parseInt(stCountry.nextToken()) * 3;
+			int gold = Integer.parseInt(stCountry.nextToken());
+			int silver = Integer.parseInt(stCountry.nextToken());
+			int bronze  = Integer.parseInt(stCountry.nextToken());
 
-			scoreBoard.put(country, gold+silver+bronze);
+			scoreBoard.put(country, new Medal(gold,silver,bronze));
 		}
 
-		// 나라 점수 정렬해서 몇 등인지
-		// 예외 케이스 공동
-
+	
 		int rank=n;
+		Medal myMedal = scoreBoard.get(m);
 		for(int key : scoreBoard.keySet()){
 			if(key==m)
 				continue;
-			if(scoreBoard.get(key) <= scoreBoard.get(m))
+			Medal nowMedal=scoreBoard.get(key);
+
+
+			if(nowMedal.getGold() < myMedal.getGold())
+				rank--;
+			else if(nowMedal.getGold() == myMedal.getGold() && nowMedal.getSilver() < myMedal.getSilver())
+				rank--;
+			else if(nowMedal.getGold() == myMedal.getGold() && nowMedal.getSilver() == myMedal.getSilver() && nowMedal.getBronze() < myMedal.getBronze())
+				rank--;
+			else if(nowMedal.getGold() == myMedal.getGold() && nowMedal.getSilver() == myMedal.getSilver() && nowMedal.getBronze() == myMedal.getBronze())
 				rank--;
 		}
 
 		System.out.println(rank);
 
+	}
+
+	static class Medal{
+		int gold,silver,bronze;
+
+		public Medal(int gold, int silver, int bronze){
+			this.gold=gold;
+			this.silver = silver;
+			this.bronze = bronze;
+		}
+
+		public int getGold(){
+			return gold;
+		}
+
+		public int getSilver(){
+			return silver;
+		}
+
+		public int getBronze(){
+			return bronze;
+		}
 	}
 }
