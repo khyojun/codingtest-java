@@ -36,15 +36,14 @@ public class Main {
         while(s<=e){
             int cnt=1;
             int mid = (s+e)/2; // 이게 돈
-            int total =mid;
+            int total =0;
 
             for(int i=0; i<n; i++){
-                if(total- list.get(i)<0){
-                    total=mid-list.get(i);
-                    cnt++;
-                }
-                else{
-                    total -=list.get(i);
+                if(total + list.get(i) > mid){
+                    total=list.get(i);
+                    cnt++; // 한 번도 안 빼먹고 근야 나갈 때 번수 1번은 무조건 나가게 되어있음.
+                }else{
+                    total += list.get(i);
                 }
             }
             // 나가긴 하지만 -> 최소 금액을 맞추기 위해 어떤 조건일 때 그렇게 하는게 좋을까?
